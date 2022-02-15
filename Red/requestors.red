@@ -122,13 +122,13 @@ osascript: object [
             note    [insert tail v " with icon note"]
             caution [insert tail v " with icon caution"]
         ]
-        either empty? v: *script v [none] [v]
+        either empty? v: *script v [none] [a: copy skip v 16]
     ]
     
     request-color: func [
         "Requests a color value."
         /default color [tuple!]
-        /local v
+        /local v vv
     ] [
         v: copy "choose color"
         all [
@@ -138,11 +138,13 @@ osascript: object [
                 *list reduce [256 * first color 256 * second color 256 * third color]
             ]
         ]
-        either empty? v: parse *script v "," [none] [
+        v: split *script v ","
+        foreach vv v [vv: trim/all vv]
+        either empty? v [none] [
             to tuple! reduce [
-                to integer! (to integer! first v) / 256
-                to integer! (to integer! second v) / 256
-                to integer! (to integer! third v) / 256
+                (to integer! first v) / 256
+                (to integer! second v) / 256
+                (to integer! third v) / 256
             ]
         ]
     ]
